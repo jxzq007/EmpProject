@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -40,8 +41,15 @@ public class DeptDAOImpl implements IDeptDAO {
 
 	@Override
 	public boolean doRemove(Set<Integer> ids) throws Exception {
-		// TODO Auto-generated method stub
-		return false;
+		StringBuffer buf = new StringBuffer(
+				"DELETE FROM dept WHERE deptno IN(");
+		Iterator<Integer> iter = ids.iterator();
+		while (iter.hasNext()) {
+			buf.append(iter.next()).append(",");
+		}
+		buf.delete(buf.length() - 1, buf.length()).append(")");
+		this.pstmt = this.conn.prepareStatement(buf.toString());
+		return this.pstmt.executeUpdate() == ids.size();
 	}
 
 	@Override

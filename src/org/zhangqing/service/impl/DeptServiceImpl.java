@@ -1,6 +1,7 @@
 package org.zhangqing.service.impl;
 
 import java.util.List;
+import java.util.Set;
 
 import org.zhangqing.dbc.DatabaseConnection;
 import org.zhangqing.factory.DAOFactory;
@@ -55,6 +56,21 @@ public class DeptServiceImpl implements IDeptService {
 		try {
 			return DAOFactory.getIDeptDAOInstance(this.dbc.getConnection())
 					.doUpdate(vo);
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			this.dbc.close();
+		}
+	}
+
+	@Override
+	public boolean rm(Set<Integer> ids) throws Exception {
+		if (ids.size() == 0) {
+			return false;
+		}
+		try {
+			return DAOFactory.getIDeptDAOInstance(this.dbc.getConnection())
+					.doRemove(ids);
 		} catch (Exception e) {
 			throw e;
 		} finally {

@@ -51,3 +51,35 @@ function formStop(e){
 		window.event.returnValue = false ;
 	}
 }
+function handleSelectAll(eleId,status){
+	var obj = document.all(eleId);
+	if(obj.length == undefined){
+		obj.checked = status;
+	} else {
+		for(var x = 0 ; x < obj.length ; x ++) {
+			obj[x].checked = status ;
+		}
+	}
+}
+function handleDeleteAll(eleId,url){
+	var obj = document.all(eleId);
+	var ids = "";//保存删除的ID
+	if(obj.length == undefined){
+		if(obj.checked) {
+			ids += obj.values + "|";
+		}
+	} else {
+		for(var x = 0 ; x < obj.length ; x ++) {
+			if(obj[x].checked){
+				ids += obj[x].value + "|";
+			}
+		}
+	}
+	if(ids == "") {
+		window.alert("您还未选择任何数据");
+	}else {
+		if(window.confirm("确定要删除所选数据？")) {
+			window.location = url + "&ids=" + ids;
+		}
+	}
+}

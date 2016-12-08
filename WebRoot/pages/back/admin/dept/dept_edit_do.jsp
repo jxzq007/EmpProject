@@ -15,8 +15,6 @@
 <base href="<%=basePath%>">
 
 <title>雇员-部门管理项目</title>
-<link rel="stylesheet" type="text/css" href="css/form.css">
-<script type="text/javascript" src="js/util.js"></script>
 </head>
 
 <body>
@@ -27,7 +25,7 @@
 		vo.setLoc(request.getParameter("loc"));
 		String msg = "部门修改失败";
 		boolean flag = false;
-		if (ServiceFactory.getIDeptServiceInstance().add(vo)) {
+		if (ServiceFactory.getIDeptServiceInstance().edit(vo)) {
 			flag = true;
 			msg = "部门修改成功";
 		}

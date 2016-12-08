@@ -17,6 +17,7 @@
 <title>雇员-部门管理项目</title>
 <link rel="stylesheet" type="text/css" href="css/form.css">
 <script type="text/javascript" src="js/util.js"></script>
+<script type="text/javascript" src="js/back/dept/dept_list.js"></script>
 <style type="text/css">
 tr:hover {
 	background-color: #FFFFFF;
@@ -33,6 +34,7 @@ tr:hover {
 	<table border="1" bgColor="#F2F2F2" width="100%" cellpadding="5px"
 		cellspacing="0">
 		<tr>
+			<td><input type="checkbox" id="selAll"></td>
 			<td>部门编号</td>
 			<td>部门名称</td>
 			<td>部门位置</td>
@@ -43,6 +45,7 @@ tr:hover {
 				Dept vo = iter.next();
 				%>
 				<tr>
+					<td><input type="checkbox" id="deptno" value="<%=vo.getDeptno()%>"></td>
 					<td><%=vo.getDeptno() %></td>
 					<td><%=vo.getDname() %></td>
 					<td><%=vo.getLoc() %></td>
@@ -52,5 +55,6 @@ tr:hover {
 			}
 		%>
 	</table>
+	<input type="button" value="删除所选数据" id="delAll">
 </body>
 </html>
