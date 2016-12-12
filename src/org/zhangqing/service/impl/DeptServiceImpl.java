@@ -69,6 +69,8 @@ public class DeptServiceImpl implements IDeptService {
 			return false;
 		}
 		try {
+			DAOFactory.getIEmpDAOInstance(this.dbc.getConnection())
+					.doRemoveByDeptno(ids);
 			return DAOFactory.getIDeptDAOInstance(this.dbc.getConnection())
 					.doRemove(ids);
 		} catch (Exception e) {

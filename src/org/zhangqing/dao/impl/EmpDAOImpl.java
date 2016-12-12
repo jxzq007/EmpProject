@@ -131,4 +131,16 @@ public class EmpDAOImpl implements IEmpDAO {
 		return 0;
 	}
 
+	@Override
+	public void doRemoveByDeptno(Set<Integer> ids) throws Exception {
+		StringBuffer buf = new StringBuffer("DELETE FROM emp WHERE deptno IN(");
+		Iterator<Integer> iter = ids.iterator();
+		while (iter.hasNext()) {
+			buf.append(iter.next()).append(",");
+		}
+		buf.delete(buf.length() - 1, buf.length()).append(")");
+		this.pstmt = this.conn.prepareStatement(buf.toString());
+		this.pstmt.executeUpdate();
+	}
+
 }
