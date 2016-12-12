@@ -66,7 +66,7 @@ function handleDeleteAll(eleId,url){
 	var ids = "";//保存删除的ID
 	if(obj.length == undefined){
 		if(obj.checked) {
-			ids += obj.values + "|";
+			ids += obj.value + "|";
 		}
 	} else {
 		for(var x = 0 ; x < obj.length ; x ++) {
