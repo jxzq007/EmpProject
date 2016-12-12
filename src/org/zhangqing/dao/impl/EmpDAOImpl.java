@@ -3,6 +3,7 @@ package org.zhangqing.dao.impl;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -21,7 +22,7 @@ public class EmpDAOImpl implements IEmpDAO {
 
 	@Override
 	public boolean doCreate(Emp vo) throws Exception {
-		String sql = "INSERT INTO emp(empno,ename,job,hiredate,sal,comm) VALUES(?,?,?,?,?,?)";
+		String sql = "INSERT INTO emp(empno,ename,job,hiredate,sal,comm,mgr) VALUES(?,?,?,?,?,?,?)";
 		this.pstmt = this.conn.prepareStatement(sql);
 		this.pstmt.setInt(1, vo.getEmpno());
 		this.pstmt.setString(2, vo.getEname());
@@ -29,19 +30,29 @@ public class EmpDAOImpl implements IEmpDAO {
 		this.pstmt.setDate(4, new java.sql.Date(vo.getHiredate().getTime()));
 		this.pstmt.setDouble(5, vo.getSal());
 		this.pstmt.setDouble(6, vo.getComm());
+		if (vo.getMgr() != null) {
+			this.pstmt.setInt(7, vo.getMgr().getEmpno());
+		} else {
+			this.pstmt.setInt(7, Types.NULL);
+		}
 		return this.pstmt.executeUpdate() > 0;
 	}
 
 	@Override
 	public boolean doUpdate(Emp vo) throws Exception {
-		String sql = "UPDATE emp SET ename=?,job=?,hiredate=?,sal=?,comm=? WHERE empno=?";
+		String sql = "UPDATE emp SET ename=?,job=?,hiredate=?,sal=?,comm=?,mgr=? WHERE empno=?";
 		this.pstmt = this.conn.prepareStatement(sql);
 		this.pstmt.setString(1, vo.getEname());
 		this.pstmt.setString(2, vo.getJob());
 		this.pstmt.setDate(3, new java.sql.Date(vo.getHiredate().getTime()));
 		this.pstmt.setDouble(4, vo.getSal());
 		this.pstmt.setDouble(5, vo.getComm());
-		this.pstmt.setInt(6, vo.getEmpno());
+		if (vo.getMgr() != null) {
+			this.pstmt.setInt(6, vo.getMgr().getEmpno());
+		} else {
+			this.pstmt.setInt(6, Types.NULL);
+		}
+		this.pstmt.setInt(7, vo.getEmpno());
 		return this.pstmt.executeUpdate() > 0;
 	}
 
@@ -141,6 +152,57 @@ public class EmpDAOImpl implements IEmpDAO {
 		buf.delete(buf.length() - 1, buf.length()).append(")");
 		this.pstmt = this.conn.prepareStatement(buf.toString());
 		this.pstmt.executeUpdate();
+	}
+
+	@Override
+	public List<Emp> findAllSplitDetails(String column, String keyWord,
+			Integer currentPage, Integer lineSize) throws Exception {
+		List<Emp> all = new ArrayList<Emp>();
+		String sql = "SELECT * FROM(SELECT e.empno,e.ename,e.job,e.hiredate,e.sal,e.comm,m.empno mno,m.ename mname,ROWNUM rn FROM emp e,emp m WHERE e.mgr=m.empno(+) AND e."
+				+ column + " LIKE ? AND ROWNUM<=? )temp WHERE temp.rn>?";
+		this.pstmt = this.conn.prepareStatement(sql);
+		this.pstmt.setString(1, "%" + keyWord + "%");
+		this.pstmt.setInt(2, currentPage * lineSize);
+		this.pstmt.setInt(3, (currentPage - 1) * lineSize);
+		ResultSet rs = this.pstmt.executeQuery();
+		while (rs.next()) {
+			Emp vo = new Emp();
+			vo.setEmpno(rs.getInt(1));
+			vo.setEname(rs.getString(2));
+			vo.setJob(rs.getString(3));
+			vo.setHiredate(rs.getDate(4));
+			vo.setSal(rs.getDouble(5));
+			vo.setComm(rs.getDouble(6));
+			Emp mgr = new Emp();
+			mgr.setEmpno(rs.getInt(7));
+			mgr.setEname(rs.getString(8));
+			vo.setMgr(mgr);
+			all.add(vo);
+		}
+		return all;
+	}
+
+	@Override
+	public Emp findByIdDetails(Integer id) throws Exception {
+		String sql = "SELECT e.empno,e.ename,e.job,e.hiredate,e.sal,e.comm,m.empno mno,m.ename mname FROM emp e,emp m WHERE e.mgr=m.empno(+) AND e.empno=?";
+		this.pstmt = this.conn.prepareStatement(sql);
+		this.pstmt.setInt(1, id);
+		ResultSet rs = this.pstmt.executeQuery();
+		Emp vo = null;
+		if (rs.next()) {
+			vo = new Emp();
+			vo.setEmpno(rs.getInt(1));
+			vo.setEname(rs.getString(2));
+			vo.setJob(rs.getString(3));
+			vo.setHiredate(rs.getDate(4));
+			vo.setSal(rs.getDouble(5));
+			vo.setComm(rs.getDouble(6));
+			Emp mgr = new Emp();
+			mgr.setEmpno(rs.getInt(7));
+			mgr.setEname(rs.getString(8));
+			vo.setMgr(mgr);
+		}
+		return vo;
 	}
 
 }

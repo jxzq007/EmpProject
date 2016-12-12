@@ -62,10 +62,14 @@ public class EmpServiceImpl implements IEmpService {
 	}
 
 	@Override
-	public Emp editPre(int id) throws Exception {
+	public Map<String,Object> editPre(int id) throws Exception {
+		Map<String,Object> map = new HashMap<String,Object>();
 		try {
-			return DAOFactory.getIEmpDAOInstance(this.dbc.getConnection())
-					.findById(id);
+			 map.put("emp", DAOFactory.getIEmpDAOInstance(this.dbc.getConnection())
+					.findByIdDetails(id));
+			 map.put("allEmps", DAOFactory.getIEmpDAOInstance(this.dbc.getConnection())
+						.findAll());
+			 return map;
 		} catch (Exception e) {
 			throw e;
 		} finally {
@@ -93,6 +97,54 @@ public class EmpServiceImpl implements IEmpService {
 		try {
 			return DAOFactory.getIEmpDAOInstance(this.dbc.getConnection())
 					.doRemove(ids);
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			this.dbc.close();
+		}
+	}
+
+	@Override
+	public Map<String, Object> addPre() throws Exception {
+		Map<String, Object> map = new HashMap<String, Object>();
+		try {
+			map.put("allEmps",
+					DAOFactory.getIEmpDAOInstance(this.dbc.getConnection())
+							.findAll());
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			this.dbc.close();
+		}
+		return map;
+	}
+
+	@Override
+	public Map<String, Object> listDetails(String column, String keyWord,
+			int currentPage, int lineSize) throws Exception {
+		Map<String, Object> map = new HashMap<String, Object>();
+		try {
+			map.put("allEmps",
+					DAOFactory.getIEmpDAOInstance(this.dbc.getConnection())
+							.findAllSplitDetails(column, keyWord, currentPage,
+									lineSize));
+			map.put("empCount",
+					DAOFactory.getIEmpDAOInstance(this.dbc.getConnection())
+							.getAllCount(column, keyWord));
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			this.dbc.close();
+		}
+		return map;
+	}
+
+	@Override
+	public Emp show(int id) throws Exception {
+		try {
+			return DAOFactory.getIEmpDAOInstance(this.dbc.getConnection())
+					.findByIdDetails(id);
 		} catch (Exception e) {
 			throw e;
 		} finally {

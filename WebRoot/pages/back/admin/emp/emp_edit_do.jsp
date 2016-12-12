@@ -31,6 +31,12 @@
 		vo.setHiredate(new SimpleDateFormat("yyy-MM-dd").parse(request.getParameter("hiredate")));
 		vo.setSal(Double.parseDouble(request.getParameter("sal")));
 		vo.setComm(Double.parseDouble(request.getParameter("comm")));
+		int mgrno = Integer.parseInt(request.getParameter("mgr"));
+		if(mgrno != 0) {
+			Emp mgr = new Emp();
+			mgr.setEmpno(mgrno);
+			vo.setMgr(mgr);
+		}
 		String msg = "雇员修改失败";
 		boolean flag = false;
 		if (ServiceFactory.getIEmpServiceInstance().edit(vo)) {
