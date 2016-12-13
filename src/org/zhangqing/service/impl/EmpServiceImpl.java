@@ -62,14 +62,18 @@ public class EmpServiceImpl implements IEmpService {
 	}
 
 	@Override
-	public Map<String,Object> editPre(int id) throws Exception {
-		Map<String,Object> map = new HashMap<String,Object>();
+	public Map<String, Object> editPre(int id) throws Exception {
+		Map<String, Object> map = new HashMap<String, Object>();
 		try {
-			 map.put("emp", DAOFactory.getIEmpDAOInstance(this.dbc.getConnection())
-					.findByIdDetails(id));
-			 map.put("allEmps", DAOFactory.getIEmpDAOInstance(this.dbc.getConnection())
-						.findAll());
-			 return map;
+			map.put("emp",
+					DAOFactory.getIEmpDAOInstance(this.dbc.getConnection())
+							.findByIdDetails(id));
+			map.put("allEmps",
+					DAOFactory.getIEmpDAOInstance(this.dbc.getConnection())
+							.findAll());
+			map.put("allDepts", DAOFactory
+					.getIDeptDAOInstance(this.dbc.getConnection()).findAll());
+			return map;
 		} catch (Exception e) {
 			throw e;
 		} finally {
@@ -111,7 +115,8 @@ public class EmpServiceImpl implements IEmpService {
 			map.put("allEmps",
 					DAOFactory.getIEmpDAOInstance(this.dbc.getConnection())
 							.findAll());
-
+			map.put("allDepts", DAOFactory
+					.getIDeptDAOInstance(this.dbc.getConnection()).findAll());
 		} catch (Exception e) {
 			throw e;
 		} finally {

@@ -37,6 +37,12 @@
 			mgr.setEmpno(mgrno);
 			vo.setMgr(mgr);
 		}
+		int deptno = Integer.parseInt(request.getParameter("deptno"));
+		if (deptno != 0) {
+			Dept dept = new Dept();
+			dept.setDeptno(deptno);
+			vo.setDept(dept);
+		}
 		String msg = "雇员修改失败";
 		boolean flag = false;
 		if (ServiceFactory.getIEmpServiceInstance().edit(vo)) {

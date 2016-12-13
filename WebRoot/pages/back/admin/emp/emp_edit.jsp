@@ -27,6 +27,7 @@
 		Map<String,Object> map = ServiceFactory.getIEmpServiceInstance().editPre(empno);
 		Emp vo = (Emp)map.get("emp");
 		List<Emp> all = (List<Emp>)map.get("allEmps");
+		List<Dept> allDepts = (List<Dept>)map.get("allDepts");
 		if(vo != null) {
 	%>
 	<form action="<%=editUrl%>" method="post" id="empEditForm">
@@ -69,6 +70,24 @@
 					</select>
 				</td>
 				<td><span id="mgrSpan"></span></td>
+			</tr>
+			<tr>
+				<td>部门：</td>
+				<td>
+					<select name="deptno" id="deptno">
+						<option value="0">====== 没有领导 =====</option>
+						<%
+							Iterator<Dept> iterDept = allDepts.iterator();
+							while(iterDept.hasNext()) {
+								Dept dept = iterDept.next();
+								%>
+									<option value="<%=dept.getDeptno()%>" <%=vo.getDept().getDeptno().equals(dept.getDeptno())?"selected":""%>><%=dept.getDname()%></option>
+								<%
+							}
+						%>
+					</select>
+				</td>
+				<td><span id="deptnoSpan"></span></td>
 			</tr>
 			<tr>
 				<td>雇佣日期：</td>

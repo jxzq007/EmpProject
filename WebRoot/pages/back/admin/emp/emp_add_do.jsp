@@ -5,8 +5,7 @@
 <%
 	request.setCharacterEncoding("UTF-8");
 	String path = request.getContextPath();
-	String basePath = request.getScheme() + "://"
-			+ request.getServerName() + ":" + request.getServerPort()
+	String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort()
 			+ path + "/";
 	String returnUrl = basePath + "pages/back/admin/emp/emp_add.jsp";
 %>
@@ -28,10 +27,16 @@
 		vo.setSal(Double.parseDouble(request.getParameter("sal")));
 		vo.setComm(Double.parseDouble(request.getParameter("comm")));
 		int mgrno = Integer.parseInt(request.getParameter("mgr"));
-		if(mgrno != 0) {
+		if (mgrno != 0) {
 			Emp mgr = new Emp();
 			mgr.setEmpno(mgrno);
 			vo.setMgr(mgr);
+		}
+		int deptno = Integer.parseInt(request.getParameter("deptno"));
+		if (deptno != 0) {
+			Dept dept = new Dept();
+			dept.setDeptno(deptno);
+			vo.setDept(dept);
 		}
 		String msg = "雇员增加失败";
 		boolean flag = false;

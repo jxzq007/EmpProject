@@ -9,6 +9,8 @@
 		<jsp:param name="allRecorders" value="<%=allRecorders%>"/>
 		<jsp:param name="keyWord" value="<%=keyWord%>"/>
 		<jsp:param name="column" value="<%=column%>"/>
+		<jsp:param name="paramName" value="额外参数名称"/>
+		<jsp:param name="paramValue" value="额外参数内容"/>
 	</jsp:include>
 --%>
 <%
@@ -20,6 +22,8 @@
 	int allRecorders = 0 ;	// 保存总记录数
 	String column = request.getParameter("column") ;
 	String keyWord = request.getParameter("keyWord") ;
+	String paramName = request.getParameter("paramName") ;
+	String paramValue = request.getParameter("paramValue") ;
 %>
 <%
 	try {
@@ -51,8 +55,8 @@
 		<%
 			} else {
 		%>
-				<li><a href="<%=url%>?cp=<%=currentPage - 1%>&col=<%=column%>&kw=<%=keyWord%>">上一页</a></li>
-				<li><a href="<%=url%>?cp=1&col=<%=column%>&kw=<%=keyWord%>">1</a></li>
+				<li><a href="<%=url%>?cp=<%=currentPage - 1%>&col=<%=column%>&kw=<%=keyWord%>&<%=paramName%>=<%=paramValue%>">上一页</a></li>
+				<li><a href="<%=url%>?cp=1&col=<%=column%>&kw=<%=keyWord%>&<%=paramName%>=<%=paramValue%>">1</a></li>
 		<%
 			}
 		%>
@@ -61,7 +65,7 @@
 			if (pageSize <= seed * 2) {
 				for (int x = 2 ; x < pageSize; x ++) {
 		%>
-					<li class="<%=currentPage == x? "active":""%>"><a href="<%=url%>?cp=<%=x%>&col=<%=column%>&kw=<%=keyWord%>"><%=x%></a></li>
+					<li class="<%=currentPage == x? "active":""%>"><a href="<%=url%>?cp=<%=x%>&col=<%=column%>&kw=<%=keyWord%>&<%=paramName%>=<%=paramValue%>"><%=x%></a></li>
 		<%
 				}
 			} else {	// 考虑到省略号的问题，6页以后
@@ -74,7 +78,7 @@
 					for (int x = startPage ; x <= endPage ; x ++) {
 						if (x < pageSize) {
 		%>
-							<li class="<%=currentPage == x? "active":""%>"><a href="<%=url%>?cp=<%=x%>&col=<%=column%>&kw=<%=keyWord%>"><%=x%></a></li>
+							<li class="<%=currentPage == x? "active":""%>"><a href="<%=url%>?cp=<%=x%>&col=<%=column%>&kw=<%=keyWord%>&<%=paramName%>=<%=paramValue%>"><%=x%></a></li>
 		<%				}
 					}
 					if ((currentPage + seed * 2)-1 <= pageSize) {	// 后面还有内容
@@ -85,7 +89,7 @@
 				} else {	// 6页以前
 					for (int x = 2 ; x <= currentPage + seed ; x ++) {
 		%>
-						<li class="<%=currentPage == x? "active":""%>"><a href="<%=url%>?cp=<%=x%>&col=<%=column%>&kw=<%=keyWord%>"><%=x%></a></li>
+						<li class="<%=currentPage == x? "active":""%>"><a href="<%=url%>?cp=<%=x%>&col=<%=column%>&kw=<%=keyWord%>&<%=paramName%>=<%=paramValue%>"><%=x%></a></li>
 		<%
 					} 
 					if ((currentPage + seed * 2) <= pageSize) {
@@ -111,20 +115,20 @@
 		<%
 			} else {
 		%>
-				<li><a href="<%=url%>?cp=<%=pageSize%>&col=<%=column%>&kw=<%=keyWord%>"><%=pageSize%></a></li>
-				<li><a href="<%=url%>?cp=<%=currentPage + 1%>&col=<%=column%>&kw=<%=keyWord%>">下一页</a></li>
+				<li><a href="<%=url%>?cp=<%=pageSize%>&col=<%=column%>&kw=<%=keyWord%>&<%=paramName%>=<%=paramValue%>"><%=pageSize%></a></li>
+				<li><a href="<%=url%>?cp=<%=currentPage + 1%>&col=<%=column%>&kw=<%=keyWord%>&<%=paramName%>=<%=paramValue%>">下一页</a></li>
 		<%
 			}
 		%>
 		</li>
 		<li>
 			<input type="text" size="5" id="goPage">
-			<input type="button" value="跳转" onclick="goPage()">
+			<input type="button" value="跳转" id="goBut" onclick="goButFun()">
 		</li>
 	</ul>
 </div>
 <script type="text/javascript">
-function goPage(){
-	window.location = "<%=url%>?cp=" + document.getElementById("goPage").value ;
-}
+	function goButFun() {
+		window.location = "<%=url%>?cp=" + document.getElementById("goPage").value + "&col=<%=column%>&kw=<%=keyWord%>&<%=paramName%>=<%=paramValue%>" ;
+	}
 </script>

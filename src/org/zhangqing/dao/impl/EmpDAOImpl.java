@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.zhangqing.dao.IEmpDAO;
+import org.zhangqing.vo.Dept;
 import org.zhangqing.vo.Emp;
 
 public class EmpDAOImpl implements IEmpDAO {
@@ -22,7 +23,7 @@ public class EmpDAOImpl implements IEmpDAO {
 
 	@Override
 	public boolean doCreate(Emp vo) throws Exception {
-		String sql = "INSERT INTO emp(empno,ename,job,hiredate,sal,comm,mgr) VALUES(?,?,?,?,?,?,?)";
+		String sql = "INSERT INTO emp(empno,ename,job,hiredate,sal,comm,mgr,deptno) VALUES(?,?,?,?,?,?,?,?)";
 		this.pstmt = this.conn.prepareStatement(sql);
 		this.pstmt.setInt(1, vo.getEmpno());
 		this.pstmt.setString(2, vo.getEname());
@@ -33,14 +34,19 @@ public class EmpDAOImpl implements IEmpDAO {
 		if (vo.getMgr() != null) {
 			this.pstmt.setInt(7, vo.getMgr().getEmpno());
 		} else {
-			this.pstmt.setInt(7, Types.NULL);
+			this.pstmt.setNull(7, Types.NULL);
+		}
+		if (vo.getDept() != null) {
+			this.pstmt.setInt(8, vo.getDept().getDeptno());
+		} else {
+			this.pstmt.setNull(8, Types.NULL);
 		}
 		return this.pstmt.executeUpdate() > 0;
 	}
 
 	@Override
 	public boolean doUpdate(Emp vo) throws Exception {
-		String sql = "UPDATE emp SET ename=?,job=?,hiredate=?,sal=?,comm=?,mgr=? WHERE empno=?";
+		String sql = "UPDATE emp SET ename=?,job=?,hiredate=?,sal=?,comm=?,mgr=?,deptno=? WHERE empno=?";
 		this.pstmt = this.conn.prepareStatement(sql);
 		this.pstmt.setString(1, vo.getEname());
 		this.pstmt.setString(2, vo.getJob());
@@ -52,7 +58,12 @@ public class EmpDAOImpl implements IEmpDAO {
 		} else {
 			this.pstmt.setInt(6, Types.NULL);
 		}
-		this.pstmt.setInt(7, vo.getEmpno());
+		if (vo.getDept() != null) {
+			this.pstmt.setInt(7, vo.getDept().getDeptno());
+		} else {
+			this.pstmt.setNull(7, Types.NULL);
+		}
+		this.pstmt.setInt(8, vo.getEmpno());
 		return this.pstmt.executeUpdate() > 0;
 	}
 
@@ -158,7 +169,7 @@ public class EmpDAOImpl implements IEmpDAO {
 	public List<Emp> findAllSplitDetails(String column, String keyWord,
 			Integer currentPage, Integer lineSize) throws Exception {
 		List<Emp> all = new ArrayList<Emp>();
-		String sql = "SELECT * FROM(SELECT e.empno,e.ename,e.job,e.hiredate,e.sal,e.comm,m.empno mno,m.ename mname,ROWNUM rn FROM emp e,emp m WHERE e.mgr=m.empno(+) AND e."
+		String sql = "SELECT * FROM(SELECT e.empno,e.ename,e.job,e.hiredate,e.sal,e.comm,m.empno mno,m.ename mname,d.deptno dno,d.dname dna,ROWNUM rn FROM emp e,emp m,dept d WHERE e.mgr=m.empno(+) AND e.deptno=d.deptno(+) AND e."
 				+ column + " LIKE ? AND ROWNUM<=? )temp WHERE temp.rn>?";
 		this.pstmt = this.conn.prepareStatement(sql);
 		this.pstmt.setString(1, "%" + keyWord + "%");
@@ -177,6 +188,10 @@ public class EmpDAOImpl implements IEmpDAO {
 			mgr.setEmpno(rs.getInt(7));
 			mgr.setEname(rs.getString(8));
 			vo.setMgr(mgr);
+			Dept dept = new Dept();
+			dept.setDeptno(rs.getInt(9));
+			dept.setDname(rs.getString(10));
+			vo.setDept(dept);
 			all.add(vo);
 		}
 		return all;
@@ -184,7 +199,7 @@ public class EmpDAOImpl implements IEmpDAO {
 
 	@Override
 	public Emp findByIdDetails(Integer id) throws Exception {
-		String sql = "SELECT e.empno,e.ename,e.job,e.hiredate,e.sal,e.comm,m.empno mno,m.ename mname FROM emp e,emp m WHERE e.mgr=m.empno(+) AND e.empno=?";
+		String sql = "SELECT e.empno,e.ename,e.job,e.hiredate,e.sal,e.comm,m.empno mno,m.ename mname,d.deptno dno,d.dname dna FROM emp e,emp m,dept d WHERE e.mgr=m.empno(+) AND e.deptno=d.deptno(+) AND e.empno=?";
 		this.pstmt = this.conn.prepareStatement(sql);
 		this.pstmt.setInt(1, id);
 		ResultSet rs = this.pstmt.executeQuery();
@@ -201,8 +216,45 @@ public class EmpDAOImpl implements IEmpDAO {
 			mgr.setEmpno(rs.getInt(7));
 			mgr.setEname(rs.getString(8));
 			vo.setMgr(mgr);
+			Dept dept = new Dept();
+			dept.setDeptno(rs.getInt(9));
+			dept.setDname(rs.getString(10));
+			vo.setDept(dept);
 		}
 		return vo;
+	}
+
+	@Override
+	public List<Emp> findAllByDept(Integer id,String column, String keyWord,
+			Integer currentPage, Integer lineSize) throws Exception {
+		List<Emp> all = new ArrayList<Emp>();
+		String sql = "SELECT * FROM(SELECT e.empno,e.ename,e.job,e.hiredate,e.sal,e.comm,m.empno mno,m.ename mname,d.deptno dno,d.dname dna,ROWNUM rn FROM emp e,emp m,dept d WHERE e.mgr=m.empno(+) AND e.deptno=d.deptno(+) AND e.deptno=? AND e."
+				+ column + " LIKE ? AND ROWNUM<=? )temp WHERE temp.rn>?";
+		this.pstmt = this.conn.prepareStatement(sql);
+		this.pstmt.setInt(1, id);
+		this.pstmt.setString(2, "%" + keyWord + "%");
+		this.pstmt.setInt(3, currentPage * lineSize);
+		this.pstmt.setInt(4, (currentPage - 1) * lineSize);
+		ResultSet rs = this.pstmt.executeQuery();
+		while (rs.next()) {
+			Emp vo = new Emp();
+			vo.setEmpno(rs.getInt(1));
+			vo.setEname(rs.getString(2));
+			vo.setJob(rs.getString(3));
+			vo.setHiredate(rs.getDate(4));
+			vo.setSal(rs.getDouble(5));
+			vo.setComm(rs.getDouble(6));
+			Emp mgr = new Emp();
+			mgr.setEmpno(rs.getInt(7));
+			mgr.setEname(rs.getString(8));
+			vo.setMgr(mgr);
+			Dept dept = new Dept();
+			dept.setDeptno(rs.getInt(9));
+			dept.setDname(rs.getString(10));
+			vo.setDept(dept);
+			all.add(vo);
+		}
+		return all;
 	}
 
 }

@@ -12,4 +12,7 @@ public interface IEmpDAO extends IDAO<Integer, Emp> {
 			Integer currentPage, Integer lineSize) throws Exception;
 	
 	public Emp findByIdDetails(Integer id) throws Exception;
+	
+	public List<Emp> findAllByDept(Integer id,String column, String keyWord,
+			Integer currentPage, Integer lineSize) throws Exception;
 }

@@ -26,6 +26,11 @@
 		Map<String, Object> map = ServiceFactory.getIEmpServiceInstance()
 				.addPre();
 		List<Emp> all = (List<Emp>)map.get("allEmps");
+		List<Dept> allDepts = (List<Dept>)map.get("allDepts");
+		int deptno = 0 ;
+		try {
+			deptno = Integer.parseInt(request.getParameter("deptno"));
+		}catch(Exception e){}
 	%>
 	<form action="<%=addUrl%>" method="post" id="empAddForm">
 		<table border="1" bgColor="#F2F2F2" width="100%" cellpadding="5px"
@@ -53,7 +58,7 @@
 				<td>雇员领导：</td>
 				<td>
 					<select name="mgr" id="mgr">
-						<option value="0">====== 没有领导 =====</option>
+						<option value="0">====== 没有部门 =====</option>
 						<%
 							Iterator<Emp> iter = all.iterator();
 							while(iter.hasNext()) {
@@ -66,6 +71,24 @@
 					</select>
 				</td>
 				<td><span id="mgrSpan"></span></td>
+			</tr>
+			<tr>
+				<td>部门：</td>
+				<td>
+					<select name="deptno" id="deptno">
+						<option value="0">====== 没有领导 =====</option>
+						<%
+							Iterator<Dept> iterDept = allDepts.iterator();
+							while(iterDept.hasNext()) {
+								Dept dept = iterDept.next();
+								%>
+									<option value="<%=dept.getDeptno()%>" <%=dept.getDeptno().equals(deptno)?"selected":""%>><%=dept.getDname()%></option>
+								<%
+							}
+						%>
+					</select>
+				</td>
+				<td><span id="deptnoSpan"></span></td>
 			</tr>
 			<tr>
 				<td>雇佣日期：</td>

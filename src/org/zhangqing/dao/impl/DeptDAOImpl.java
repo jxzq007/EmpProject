@@ -4,8 +4,10 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.zhangqing.dao.IDeptDAO;
@@ -87,14 +89,72 @@ public class DeptDAOImpl implements IDeptDAO {
 	@Override
 	public List<Dept> findAllSplit(String column, String keyWord,
 			Integer currentPage, Integer lineSize) throws Exception {
-		// TODO Auto-generated method stub
-		return null;
+		throw new Exception("此方法未实现");
 	}
 
 	@Override
 	public Integer getAllCount(String column, String keyWord) throws Exception {
-		// TODO Auto-generated method stub
-		return null;
+		throw new Exception("此方法未实现");
+	}
+
+	@Override
+	public List<Dept> findAllDetails() throws Exception {
+		List<Dept> all = new ArrayList<Dept>();
+		String sql = " SELECT d.deptno,d.dname,d.loc,temp.count,temp.avg,temp.sum,temp.max,temp.min,temp.avgyears FROM dept d,( "
+				+ "		SELECT deptno dno,COUNT(*) count,TRUNC(AVG(sal)) avg,SUM(sal) sum,MAX(sal) max,MIN(sal) min,TRUNC(AVG(MONTHS_BETWEEN(SYSDATE,hiredate)/12)) avgyears "
+				+ "		FROM emp "
+				+ "		GROUP BY deptno)temp "
+				+ " WHERE d.deptno=temp.dno(+) ";
+//		System.out.println("************************************");
+//		System.out.println(sql);
+//		System.out.println("************************************");
+		this.pstmt = this.conn.prepareStatement(sql);
+		ResultSet rs = this.pstmt.executeQuery();
+		Dept vo = null;
+		while (rs.next()) {
+			vo = new Dept();
+			vo.setDeptno(rs.getInt(1));
+			vo.setDname(rs.getString(2));
+			vo.setLoc(rs.getString(3));
+			Map<String, Object> stat = new HashMap<String, Object>();
+			stat.put("count", rs.getInt(4));
+			stat.put("avg", rs.getDouble(5));
+			stat.put("sum", rs.getDouble(6));
+			stat.put("max", rs.getDouble(7));
+			stat.put("min", rs.getDouble(8));
+			stat.put("avgyear", rs.getInt(9));
+			vo.setStat(stat);
+			all.add(vo);
+		}
+		return all;
+	}
+
+	@Override
+	public Dept findByIdDetails(Integer id) throws Exception {
+		Dept vo = null;
+		String sql = " SELECT d.deptno,d.dname,d.loc,temp.count,temp.avg,temp.sum,temp.max,temp.min,temp.avgyears FROM dept d,( "
+				+ "		SELECT deptno dno,COUNT(*) count,TRUNC(AVG(sal)) avg,SUM(sal) sum,MAX(sal) max,MIN(sal) min,TRUNC(AVG(MONTHS_BETWEEN(SYSDATE,hiredate)/12)) avgyears "
+				+ "		FROM emp "
+				+ "		GROUP BY deptno)temp "
+				+ " WHERE d.deptno=temp.dno(+) AND d.deptno=?";
+		this.pstmt = this.conn.prepareStatement(sql);
+		this.pstmt.setInt(1, id);
+		ResultSet rs = this.pstmt.executeQuery();
+		if (rs.next()) {
+			vo = new Dept();
+			vo.setDeptno(rs.getInt(1));
+			vo.setDname(rs.getString(2));
+			vo.setLoc(rs.getString(3));
+			Map<String, Object> stat = new HashMap<String, Object>();
+			stat.put("count", rs.getInt(4));
+			stat.put("avg", rs.getDouble(5));
+			stat.put("sum", rs.getDouble(6));
+			stat.put("max", rs.getDouble(7));
+			stat.put("min", rs.getDouble(8));
+			stat.put("avgyear", rs.getInt(9));
+			vo.setStat(stat);
+		}
+		return vo;
 	}
 
 }

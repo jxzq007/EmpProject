@@ -1,6 +1,8 @@
 package org.zhangqing.service.impl;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.zhangqing.dbc.DatabaseConnection;
@@ -78,6 +80,34 @@ public class DeptServiceImpl implements IDeptService {
 		} finally {
 			this.dbc.close();
 		}
+	}
+
+	@Override
+	public List<Dept> listDetails() throws Exception {
+		try {
+			return DAOFactory.getIDeptDAOInstance(this.dbc.getConnection())
+					.findAllDetails();
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			this.dbc.close();
+		}
+	}
+
+	@Override
+	public Dept show(int id, String column, String keyWord,
+			Integer currentPage, Integer lineSize) throws Exception {
+		Dept vo = null ;
+		if (DAOFactory.getIDeptDAOInstance(this.dbc.getConnection())
+				.findByIdDetails(id) != null) {
+			vo = new Dept();
+			vo = DAOFactory.getIDeptDAOInstance(this.dbc.getConnection())
+					.findByIdDetails(id);
+			vo.setEmps(DAOFactory.getIEmpDAOInstance(this.dbc.getConnection())
+					.findAllByDept(id, column, keyWord, currentPage, lineSize));
+			
+		}
+		return vo;
 	}
 
 }
