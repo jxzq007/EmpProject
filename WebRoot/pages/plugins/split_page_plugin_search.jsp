@@ -6,6 +6,8 @@
 	<jsp:param name="columnData" value="<%=columnData%>"/>
 	<jsp:param name="keyWord" value="<%=keyWord%>"/>
 	<jsp:param name="column" value="<%=column%>"/>
+	<jsp:param name="paramName" value="额外参数名称"/>
+	<jsp:param name="paramValue" value="额外参数内容"/>
 </jsp:include>
 --%>
 <%
@@ -14,6 +16,8 @@
 	String columnData = request.getParameter("columnData") ;
 	String keyWord = request.getParameter("keyWord") ;
 	String column = request.getParameter("column") ;
+	String paramName = request.getParameter("paramName") ;
+	String paramValue = request.getParameter("paramValue") ;
 %>
 <div id="searchDiv">
 	<form action="<%=url%>" method="post">
@@ -35,6 +39,7 @@
 			}
 		%>
 		<input type="text" name="kw" id="kw" placeholder="请输入模糊查询关键字" value="<%=keyWord == null ? "" : keyWord%>">
+		<input type="hidden" name="<%=paramName%>" value="<%=paramValue%>">
 		<input type="submit" value="查询">
 	</form>
 </div>

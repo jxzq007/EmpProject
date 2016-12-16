@@ -99,6 +99,8 @@ tr:hover {
 		<jsp:param name="columnData" value="<%=columnData%>" />
 		<jsp:param name="keyWord" value="<%=keyWord%>" />
 		<jsp:param name="column" value="<%=column%>" />
+		<jsp:param name="paramName" value="deptno"/>
+		<jsp:param name="paramValue" value="<%=deptno%>"/>
 	</jsp:include>
 		<table border="1" bgColor="#F2F2F2" width="100%" cellpadding="5px"
 		cellspacing="0">
