@@ -1,3 +1,10 @@
+#preview, .img, img  {
+	width:200px;
+	height:200px;
+}
+#preview {
+	border:1px solid #000;
+}
 .pagination {
   display: inline-block;
   padding-left: 0;

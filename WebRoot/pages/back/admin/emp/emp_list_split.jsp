@@ -80,6 +80,8 @@ tr:hover {
 			<td>雇佣日期</td>
 			<td>基本工资</td>
 			<td>雇员佣金</td>
+			<td>照片</td>
+			<td>简介</td>
 			<td>操作</td>
 		</tr>
 		<%
@@ -87,13 +89,15 @@ tr:hover {
 				Emp vo = iter.next();
 		%>
 		<tr>
-			<td><input type="checkbox" id="empno" value="<%=vo.getEmpno()%>"></td>
+			<td><input type="checkbox" id="empno" value="<%=vo.getEmpno()%>:<%=vo.getPhoto()%>"></td>
 			<td><%=vo.getEmpno()%></td>
 			<td><%=vo.getEname()%></td>
 			<td><%=vo.getJob()%></td>
 			<td><%=vo.getHiredate()%></td>
 			<td><%=vo.getSal()%></td>
 			<td><%=vo.getComm()%></td>
+			<td><img src="upload/emp/<%=vo.getPhoto()%>" style="height:50px; width:50px;"></td>
+			<td><%=vo.getNote()%></td>
 			<td><a href="<%=editPreUrl%>?empno=<%=vo.getEmpno()%>&retUrl=<%=url%>&col=<%=column%>&kw=<%=keyWord%>&cp=<%=currentPage%>">修改</a></td>
 		</tr>
 		<%

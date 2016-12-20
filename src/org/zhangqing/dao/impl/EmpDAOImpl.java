@@ -23,7 +23,7 @@ public class EmpDAOImpl implements IEmpDAO {
 
 	@Override
 	public boolean doCreate(Emp vo) throws Exception {
-		String sql = "INSERT INTO emp(empno,ename,job,hiredate,sal,comm,mgr,deptno) VALUES(?,?,?,?,?,?,?,?)";
+		String sql = "INSERT INTO emp(empno,ename,job,hiredate,sal,comm,mgr,deptno,photo,note) VALUES(?,?,?,?,?,?,?,?,?,?)";
 		this.pstmt = this.conn.prepareStatement(sql);
 		this.pstmt.setInt(1, vo.getEmpno());
 		this.pstmt.setString(2, vo.getEname());
@@ -41,12 +41,14 @@ public class EmpDAOImpl implements IEmpDAO {
 		} else {
 			this.pstmt.setNull(8, Types.NULL);
 		}
+		this.pstmt.setString(9, vo.getPhoto());
+		this.pstmt.setString(10, vo.getNote());
 		return this.pstmt.executeUpdate() > 0;
 	}
 
 	@Override
 	public boolean doUpdate(Emp vo) throws Exception {
-		String sql = "UPDATE emp SET ename=?,job=?,hiredate=?,sal=?,comm=?,mgr=?,deptno=? WHERE empno=?";
+		String sql = "UPDATE emp SET ename=?,job=?,hiredate=?,sal=?,comm=?,mgr=?,deptno=?,photo=?,note=? WHERE empno=?";
 		this.pstmt = this.conn.prepareStatement(sql);
 		this.pstmt.setString(1, vo.getEname());
 		this.pstmt.setString(2, vo.getJob());
@@ -63,7 +65,9 @@ public class EmpDAOImpl implements IEmpDAO {
 		} else {
 			this.pstmt.setNull(7, Types.NULL);
 		}
-		this.pstmt.setInt(8, vo.getEmpno());
+		this.pstmt.setString(8, vo.getPhoto());
+		this.pstmt.setString(9, vo.getNote());
+		this.pstmt.setInt(10, vo.getEmpno());
 		return this.pstmt.executeUpdate() > 0;
 	}
 
@@ -101,7 +105,7 @@ public class EmpDAOImpl implements IEmpDAO {
 	@Override
 	public List<Emp> findAll() throws Exception {
 		List<Emp> all = new ArrayList<Emp>();
-		String sql = "SELECT empno,ename,job,hiredate,sal,comm FROM emp";
+		String sql = "SELECT empno,ename,job,hiredate,sal,comm,photo,note FROM emp";
 		this.pstmt = this.conn.prepareStatement(sql);
 		ResultSet rs = this.pstmt.executeQuery();
 		while (rs.next()) {
@@ -112,6 +116,8 @@ public class EmpDAOImpl implements IEmpDAO {
 			vo.setHiredate(rs.getDate(4));
 			vo.setSal(rs.getDouble(5));
 			vo.setComm(rs.getDouble(6));
+			vo.setPhoto(rs.getString(7));
+			vo.setNote(rs.getString(8));
 			all.add(vo);
 		}
 		return all;
@@ -121,7 +127,7 @@ public class EmpDAOImpl implements IEmpDAO {
 	public List<Emp> findAllSplit(String column, String keyWord,
 			Integer currentPage, Integer lineSize) throws Exception {
 		List<Emp> all = new ArrayList<Emp>();
-		String sql = "SELECT * FROM(SELECT empno,ename,job,hiredate,sal,comm,ROWNUM rn FROM emp WHERE "
+		String sql = "SELECT * FROM(SELECT empno,ename,job,hiredate,sal,comm,photo,note,ROWNUM rn FROM emp WHERE "
 				+ column + " LIKE ? AND ROWNUM<=? )temp WHERE temp.rn>?";
 		this.pstmt = this.conn.prepareStatement(sql);
 		this.pstmt.setString(1, "%" + keyWord + "%");
@@ -136,6 +142,8 @@ public class EmpDAOImpl implements IEmpDAO {
 			vo.setHiredate(rs.getDate(4));
 			vo.setSal(rs.getDouble(5));
 			vo.setComm(rs.getDouble(6));
+			vo.setPhoto(rs.getString(7));
+			vo.setNote(rs.getString(8));
 			all.add(vo);
 		}
 		return all;
@@ -169,7 +177,7 @@ public class EmpDAOImpl implements IEmpDAO {
 	public List<Emp> findAllSplitDetails(String column, String keyWord,
 			Integer currentPage, Integer lineSize) throws Exception {
 		List<Emp> all = new ArrayList<Emp>();
-		String sql = "SELECT * FROM(SELECT e.empno,e.ename,e.job,e.hiredate,e.sal,e.comm,m.empno mno,m.ename mname,d.deptno dno,d.dname dna,ROWNUM rn FROM emp e,emp m,dept d WHERE e.mgr=m.empno(+) AND e.deptno=d.deptno(+) AND e."
+		String sql = "SELECT * FROM(SELECT e.empno,e.ename,e.job,e.hiredate,e.sal,e.comm,m.empno mno,m.ename mname,d.deptno dno,d.dname dna,e.photo,e.note,ROWNUM rn FROM emp e,emp m,dept d WHERE e.mgr=m.empno(+) AND e.deptno=d.deptno(+) AND e."
 				+ column + " LIKE ? AND ROWNUM<=? )temp WHERE temp.rn>?";
 		this.pstmt = this.conn.prepareStatement(sql);
 		this.pstmt.setString(1, "%" + keyWord + "%");
@@ -192,6 +200,8 @@ public class EmpDAOImpl implements IEmpDAO {
 			dept.setDeptno(rs.getInt(9));
 			dept.setDname(rs.getString(10));
 			vo.setDept(dept);
+			vo.setPhoto(rs.getString(11));
+			vo.setNote(rs.getString(12));
 			all.add(vo);
 		}
 		return all;
@@ -199,7 +209,7 @@ public class EmpDAOImpl implements IEmpDAO {
 
 	@Override
 	public Emp findByIdDetails(Integer id) throws Exception {
-		String sql = "SELECT e.empno,e.ename,e.job,e.hiredate,e.sal,e.comm,m.empno mno,m.ename mname,d.deptno dno,d.dname dna FROM emp e,emp m,dept d WHERE e.mgr=m.empno(+) AND e.deptno=d.deptno(+) AND e.empno=?";
+		String sql = "SELECT e.empno,e.ename,e.job,e.hiredate,e.sal,e.comm,m.empno mno,m.ename mname,d.deptno dno,d.dname dna,e.photo,e.note FROM emp e,emp m,dept d WHERE e.mgr=m.empno(+) AND e.deptno=d.deptno(+) AND e.empno=?";
 		this.pstmt = this.conn.prepareStatement(sql);
 		this.pstmt.setInt(1, id);
 		ResultSet rs = this.pstmt.executeQuery();
@@ -220,12 +230,14 @@ public class EmpDAOImpl implements IEmpDAO {
 			dept.setDeptno(rs.getInt(9));
 			dept.setDname(rs.getString(10));
 			vo.setDept(dept);
+			vo.setPhoto(rs.getString(11));
+			vo.setNote(rs.getString(12));
 		}
 		return vo;
 	}
 
 	@Override
-	public List<Emp> findAllByDept(Integer id,String column, String keyWord,
+	public List<Emp> findAllByDept(Integer id, String column, String keyWord,
 			Integer currentPage, Integer lineSize) throws Exception {
 		List<Emp> all = new ArrayList<Emp>();
 		String sql = "SELECT * FROM(SELECT e.empno,e.ename,e.job,e.hiredate,e.sal,e.comm,m.empno mno,m.ename mname,d.deptno dno,d.dname dna,ROWNUM rn FROM emp e,emp m,dept d WHERE e.mgr=m.empno(+) AND e.deptno=d.deptno(+) AND e.deptno=? AND e."

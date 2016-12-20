@@ -16,9 +16,20 @@
 
 <title>雇员-部门管理项目</title>
 <link rel="stylesheet" type="text/css" href="css/form.css">
+<link rel="stylesheet" type="text/css" href="css/style.css">
+<link rel="stylesheet" type="text/css" href="edit/edit.css">
 <script type="text/javascript" src="js/util.js"></script>
 <script type="text/javascript" src="<%=basePath%>js/WdatePicker.js"></script>
-<script type="text/javascript" src="js/back/emp/emp_edit.js"></script>
+<script type="text/javascript" src="js/back/emp/emp_add.js"></script>
+<script type="text/javascript" src="edit/lang/zh_CN.js"></script>
+<script type="text/javascript" src="edit/kindeditor-core.js"></script>
+<script type="text/javascript" src="edit/plugin-all.js"></script>
+<script type="text/javascript">
+KE.show({
+	id : 'note',
+	cssPath : '<%=basePath%>edit/index.css'
+});
+</script>
 </head>
 
 <body>
@@ -30,16 +41,17 @@
 		List<Dept> allDepts = (List<Dept>)map.get("allDepts");
 		if(vo != null) {
 	%>
-	<form action="<%=editUrl%>" method="post" id="empEditForm">
+	<form action="<%=editUrl%>" method="post" id="empEditForm" enctype="multipart/form-data">
 		<table border="1" bgColor="#F2F2F2" width="100%" cellpadding="5px"
 			cellspacing="0">
 			<tr>
-				<td colspan="3">雇员修改页面</td>
+				<td colspan="4">雇员修改页面</td>
 			</tr>
 			<tr>
-				<td width="15%">雇员编号：</td>
-				<td width="50%"><%=vo.getEmpno() %></td>
-				<td width="35%"><span id="empnoSpan"></span></td>
+				<td width="10%">雇员编号：</td>
+				<td width="30%"><%=vo.getEmpno() %></td>
+				<td width="30%"><span id="empnoSpan"></span></td>
+				<td width="40%" rowspan="9"><div id="preview" class="img"><img alt="pic" src="upload/emp/<%=vo.getPhoto()%>"></div></td>
 			</tr>
 			<tr>
 				<td>雇员姓名：</td>
@@ -106,7 +118,27 @@
 				<td><span id="commSpan"></span></td>
 			</tr>
 			<tr>
-				<td colspan="3">
+				<td>选择雇员头像：</td>
+				<td><input type="file" name="pic" id="pic" onchange="preview(this)"></td>
+				<td><span id="picSpan"></span></td>
+			</tr>
+			<tr>
+				<td colspan="4">
+					雇员简介：
+				</td>
+			</tr>
+			<tr>
+				<td colspan="4">
+					<div class="editor">
+						<textarea id="note" name="note" style="width:650px;height:200px;visibility:hidden;">
+						<%=vo.getNote()%>
+						</textarea>
+						</div>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="4">
+					<input type="hidden" name="oldPic" id="oldPic" value="<%=vo.getPhoto()%>">
 					<input type="hidden" name="empno" id="empno" value="<%=vo.getEmpno()%>">
 					<input type="hidden" name="retUrl" id="retUrl" value="<%=request.getParameter("retUrl")%>">
 					<input type="hidden" name="cp" id="cp" value="<%=request.getParameter("cp")%>">

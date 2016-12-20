@@ -10,14 +10,13 @@
 <head>
 <title>管理中心</title>
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
-<base href="<%=basePath%>">
 </head>
 <%
 	if(session.getAttribute("mid") == null) {
 		%>
 <script type="text/javascript">
 	window.alert("您还未登录，请先登录");
-	window.location = "pages/back/login.jsp";
+	window.location = "<%=loginUrl%>";
 </script>
 		<%
 	}

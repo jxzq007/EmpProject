@@ -16,9 +16,20 @@
 
 <title>雇员-部门管理项目</title>
 <link rel="stylesheet" type="text/css" href="css/form.css">
+<link rel="stylesheet" type="text/css" href="css/style.css">
+<link rel="stylesheet" type="text/css" href="edit/edit.css">
 <script type="text/javascript" src="js/util.js"></script>
 <script type="text/javascript" src="<%=basePath%>js/WdatePicker.js"></script>
 <script type="text/javascript" src="js/back/emp/emp_add.js"></script>
+<script type="text/javascript" src="edit/lang/zh_CN.js"></script>
+<script type="text/javascript" src="edit/kindeditor-core.js"></script>
+<script type="text/javascript" src="edit/plugin-all.js"></script>
+<script type="text/javascript">
+KE.show({
+	id : 'note',
+	cssPath : '<%=basePath%>edit/index.css'
+});
+</script>
 </head>
 
 <body>
@@ -32,17 +43,18 @@
 			deptno = Integer.parseInt(request.getParameter("deptno"));
 		}catch(Exception e){}
 	%>
-	<form action="<%=addUrl%>" method="post" id="empAddForm">
+	<form action="<%=addUrl%>" method="post" id="empAddForm" enctype="multipart/form-data">
 		<table border="1" bgColor="#F2F2F2" width="100%" cellpadding="5px"
 			cellspacing="0">
 			<tr>
-				<td colspan="3">雇员增加页面</td>
+				<td colspan="4">雇员增加页面</td>
 			</tr>
 			<tr>
-				<td width="15%">雇员编号：</td>
-				<td width="50%"><input type="text" name="empno" id="empno"
+				<td width="10%">雇员编号：</td>
+				<td width="30%"><input type="text" name="empno" id="empno"
 					class="init"></td>
-				<td width="35%"><span id="empnoSpan"></span></td>
+				<td width="30%"><span id="empnoSpan"></span></td>
+				<td width="40%" rowspan="9"><div id="preview" class="img"></div></td>
 			</tr>
 			<tr>
 				<td>雇员姓名：</td>
@@ -107,7 +119,26 @@
 				<td><span id="commSpan"></span></td>
 			</tr>
 			<tr>
-				<td colspan="3"><input type="submit" value="增加"> <input
+				<td>选择雇员头像：</td>
+				<td><input type="file" name="pic" id="pic" onchange="preview(this)"></td>
+				<td><span id="picSpan"></span></td>
+			</tr>
+			<tr>
+				<td colspan="4">
+					雇员简介：
+				</td>
+			</tr>
+			<tr>
+				<td colspan="4">
+					<div class="editor">
+						<textarea id="note" name="note" style="width:650px;height:200px;visibility:hidden;">
+							heh
+						</textarea>
+						</div>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="4"><input type="submit" value="增加"> <input
 					type="reset" value="重置"></td>
 			</tr>
 		</table>
