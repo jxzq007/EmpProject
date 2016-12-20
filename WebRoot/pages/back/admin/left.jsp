@@ -187,7 +187,7 @@ H1 a {
         </table>
         <ul class="MM">
 		  <li><a href="<%=basePath%>pages/back/admin/dept/dept_add.jsp" target="main">增加部门</a></li>
-		  <li><a href="<%=basePath%>pages/back/admin/dept/dept_list.jsp" target="main">部门列表</a></li>
+		  <li><a href="<%=basePath%>pages/back/admin/dept/DeptServlet/list" target="main">部门列表</a></li>
 		  <li><a href="<%=basePath%>pages/back/admin/dept/dept_list_details.jsp" target="main">详细列表</a></li>
         </ul>
       </div>

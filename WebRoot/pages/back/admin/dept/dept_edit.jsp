@@ -1,6 +1,5 @@
 <%@ page language="java" import="java.util.*" pageEncoding="UTF-8"%>
 <%@ page import="org.zhangqing.vo.*"%>
-<%@ page import="org.zhangqing.factory.*"%>
 <%
 	request.setCharacterEncoding("UTF-8");
 	String path = request.getContextPath();
@@ -8,7 +7,7 @@
 			+ request.getServerName() + ":" + request.getServerPort()
 			+ path + "/";
 	String editUrl = basePath
-			+ "pages/back/admin/dept/dept_edit_do.jsp";
+			+ "pages/back/admin/dept/DeptServlet/edit";
 %>
 
 <html>
@@ -23,8 +22,7 @@
 
 <body>
 	<%
-		Dept vo = ServiceFactory.getIDeptServiceInstance()
-				.editPre(Integer.parseInt(request.getParameter("deptno")));
+		Dept vo = (Dept)request.getAttribute("dept");
 		if (vo != null) {
 	%>
 	<form action="<%=editUrl%>" method="post" id="deptEditForm">

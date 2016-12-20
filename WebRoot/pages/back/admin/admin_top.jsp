@@ -4,7 +4,7 @@
 	String basePath = request.getScheme() + "://"
 			+ request.getServerName() + ":" + request.getServerPort()
 			+ path + "/";
-	String logoutUrl = basePath + "pages/back/logout.jsp" ;
+	String logoutUrl = basePath + "pages/back/MemberLogoutServlet" ;
 %>
 <html>
 <head>

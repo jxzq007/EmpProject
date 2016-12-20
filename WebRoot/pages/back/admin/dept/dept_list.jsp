@@ -7,7 +7,7 @@
 	String basePath = request.getScheme() + "://"
 			+ request.getServerName() + ":" + request.getServerPort()
 			+ path + "/";
-	String editPreUrl = basePath + "pages/back/admin/dept/dept_edit.jsp";
+	String editPreUrl = basePath + "pages/back/admin/dept/DeptServlet/editPre";
 %>
 
 <html>
@@ -28,7 +28,7 @@ tr:hover {
 <body>
 	<h1>部门列表</h1>
 	<%
-		List<Dept> all = ServiceFactory.getIDeptServiceInstance().list();
+		List<Dept> all = (List<Dept>)request.getAttribute("allDepts");
 		Iterator<Dept> iter = all.iterator();
 	%>
 	<table border="1" bgColor="#F2F2F2" width="100%" cellpadding="5px"

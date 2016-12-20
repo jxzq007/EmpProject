@@ -5,7 +5,7 @@
 	String basePath = request.getScheme() + "://"
 			+ request.getServerName() + ":" + request.getServerPort()
 			+ path + "/";
-	String addUrl = basePath + "pages/back/admin/dept/dept_add_do.jsp";
+	String addUrl = basePath + "pages/back/admin/dept/DeptServlet/add";
 %>
 
 <html>

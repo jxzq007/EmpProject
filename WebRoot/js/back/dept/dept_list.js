@@ -3,6 +3,6 @@ window.onload = function(){
 		handleSelectAll("deptno",this.checked);
 	});
 	bind(ele("delAll"),"click",function(){
-		handleDeleteAll("deptno","pages/back/admin/dept/dept_rm_do.jsp?a=a");
+		handleDeleteAll("deptno","pages/back/admin/dept/DeptServlet/rm?a=a");
 	});
 }

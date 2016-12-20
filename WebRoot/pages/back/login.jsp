@@ -4,7 +4,7 @@
 	String basePath = request.getScheme() + "://"
 			+ request.getServerName() + ":" + request.getServerPort()
 			+ path + "/";
-	String loginUrl = basePath + "pages/back/check.jsp" ;
+	String loginUrl = basePath + "pages/back/MemberLoginServlet" ;
 %>
 <title>网站管理员登陆</title>
 <base href="<%=basePath%>">
